@@ -25,27 +25,50 @@ CREATE TABLE sightings (
 );
 
 
-INSERT INTO rangers (name, region) values 
-('Daniel Silva', 'Western Forest'),
-('Eva Martinez', 'Southern Plateau'),
-('Farid Khan', 'Highland Reserve');
-SELECT * from rangers;
+INSERT INTO rangers (name, region) VALUES 
+('Meera Patel', 'Deepwood Valley'),
+('Arjun Rao', 'Northern Cliffs'),
+('Laila Khan', 'Eastern Meadows');
+SELECT * FROM rangers;
 
 
 INSERT INTO species (common_name, scientific_name, discovery_date, conservation_status) VALUES
-('Black Panther', 'Panthera pardus', '1800-06-10', 'Endangered'),
-('Indian Cobra', 'Naja naja', '1758-03-01', 'Vulnerable'),
-('Great Hornbill', 'Buceros bicornis', '1786-01-01', 'Near Threatened');
+('Shadow Leopard', 'Panthera pardus noctis', '1798-09-14', 'Endangered'),
+('Golden Langur', 'Trachypithecus geei', '1953-01-01', 'Vulnerable'),
+('Indian Pangolin', 'Manis crassicaudata', '1825-05-10', 'Endangered'),
+('Forest Eagle', 'Aquila sylvanus', '1880-02-22', 'Near Threatened');
+
 
 SELECT * from species;
+DROP table species;
 
 INSERT INTO sightings (species_id, ranger_id, location, sighting_time, notes) VALUES
-(5, 4, 'Moonlight Clearing', '2024-06-05', 'Heard rustling and spotted silhouette'),
-(6, 5, 'Rocky Bend', '2024-06-07', 'Observed basking near rocks'),
-(7, 6, 'Skyhill Cliffs', '2024-06-10', 'Flying in pairs across canyon'),
-(5, 5, 'Shadow Glen', '2024-06-12', NULL);
+(1, 1, 'Shadow Ridge', '2024-05-10', 'Tracks and distant calls heard'),       -- Seen once
+(2, 2, 'Langur Creek', '2024-05-12', 'Group seen on treetop'),               -- Seen once
+(3, 3, 'Pine Hollow', '2024-05-13', 'Burrows found near stream'),            -- Seen once
+(4, 1, 'Eagle Rock', '2024-05-14', 'Circling above cliffs'),                 -- Seen 2x
+(4, 2, 'Cliffside Watch', '2024-05-15', 'Nesting pair observed');
 
-SELECT * from sightings;
+SELECT * FROM sightings;
+DROP table sightings;
 
+
+--1 Register a new ranger
+
+INSERT into rangers (name , region) VALUES
+('Derek Fox' ,'Coastal Plains')
+
+SELECT * FROM rangers;
+
+-- Count unique species ever sighted.
+
+ 
+SELECT COUNT(*)
+FROM (
+  SELECT species_id
+  FROM sightings
+  GROUP BY species_id
+  HAVING COUNT(*) = 1
+)
 
 
