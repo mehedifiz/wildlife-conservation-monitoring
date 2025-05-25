@@ -43,7 +43,7 @@ SELECT * from species;
 DROP table species;
 
 INSERT INTO sightings (species_id, ranger_id, location, sighting_time, notes) VALUES
-(1, 1, 'Shadow Ridge', '2024-05-10', 'Tracks and distant calls heard'),       -- Seen once
+(1, 1, 'pass Ridge', '2024-05-10', 'Tracks and distant calls heard'),       -- Seen once
 (2, 2, 'Langur Creek', '2024-05-12', 'Group seen on treetop'),               -- Seen once
 (3, 3, 'Pine Hollow', '2024-05-13', 'Burrows found near stream'),            -- Seen once
 (4, 1, 'Eagle Rock', '2024-05-14', 'Circling above cliffs'),                 -- Seen 2x
@@ -65,10 +65,71 @@ SELECT * FROM rangers;
  
 SELECT COUNT(*)
 FROM (
-  SELECT species_id
-  FROM sightings
+  SELECT species_id FROM sightings
   GROUP BY species_id
   HAVING COUNT(*) = 1
-)
+  )
 
 
+
+  --3️⃣ Find all sightings where the location includes "Pass".
+
+  select * from sightings 
+  where location like '%pass%' ;
+
+
+--4️⃣ List each ranger's name and their total number of sightings.
+
+  SELECT  name , count(sightings.sighting_id) from rangers  
+  left JOIN sightings ON rangers.ranger_id = sightings.ranger_id
+
+  GROUP BY name ;
+
+
+-- 5️⃣ List species that have never been sighted.
+
+INSERT into species (common_name, scientific_name, discovery_date, conservation_status) VALUES
+('Mountain Viper', 'Vipera montana', '2000-03-01', 'Least Concern'),
+('River Otter', 'Lutra lutra', '1995-07-20', 'Least Concern');
+
+SELECT * from species 
+where species_id not in 
+   (SELECT distinct species_id from sightings);
+
+
+
+-- SELECT distinct species_id from sightings
+
+
+--6️⃣ Show the most recent 2 sightings.
+
+SELECT * FROM sightings 
+
+ORDER BY sighting_time desc limit 2 ; 
+
+-- 7️⃣ Update all species discovered before year 1800 to have status 'Historic'. 
+
+update species set conservation_status = 'Historic' where 
+
+extract(year from discovery_date) < '1800'
+
+  select * from species;
+
+  --8️⃣ Label each sighting's time of day as 'Morning', 'Afternoon', or 'Evening'. 
+SELECT 
+  sighting_id,  
+  sighting_time,
+  CASE 
+     WHEN EXTRACT(HOUR FROM sighting_time) < 12 THEN 'Morning'
+     when EXTRACT(HOUR FROM sighting_time) < 17 THEN 'Afternoon'
+   
+  END  
+FROM sightings;
+
+ 
+
+ --9️⃣ Delete rangers who have never sighted any species
+  DELETE FROM rangers
+  WHERE ranger_id NOT IN (
+  SELECT DISTINCT ranger_id FROM sightings
+  )
